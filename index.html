@@ -30,7 +30,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            pointer-events: none; /* Only the SVG itself will be hoverable */
+            pointer-events: none; 
             z-index: 100;
             cursor: pointer;
         }
@@ -59,7 +59,7 @@
         .balloon-overlay {
             position: absolute;
             z-index: 50;
-            pointer-events: none; /* Only the SVG itself will be hoverable */
+            pointer-events: none; 
             cursor: pointer;
             transition: none;
         }
@@ -202,14 +202,12 @@
             function animateBalloon() {
                 if (!balloonElement) return;
                 
-                balloonTime += 0.002; // Much slower speed
+                balloonTime += 0.002; 
                 
-                // Figure-eight pattern using parametric equations
-                // x = sin(t), y = sin(2t) creates a figure-eight
                 const centerX = window.innerWidth / 2;
                 const centerY = window.innerHeight / 2;
-                const scaleX = Math.min(window.innerWidth * 0.3, 300); // Width of figure-eight
-                const scaleY = Math.min(window.innerHeight * 0.2, 150); // Height of figure-eight
+                const scaleX = Math.min(window.innerWidth * 0.3, 300); 
+                const scaleY = Math.min(window.innerHeight * 0.2, 150); 
                 
                 const balloonX = centerX + Math.sin(balloonTime) * scaleX;
                 const balloonY = centerY + Math.sin(2 * balloonTime) * scaleY;
@@ -224,10 +222,6 @@
             animateBalloon();
         }
 
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            // Figure-eight will automatically adjust to new window size
-        });
     </script>
 </body>
 </html>
