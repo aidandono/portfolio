@@ -30,7 +30,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            pointer-events: auto; /* Changed from none to enable hover */
+            pointer-events: none; /* Only the SVG itself will be hoverable */
             z-index: 100;
             cursor: pointer;
         }
@@ -42,11 +42,30 @@
             max-height: 40vh;
             z-index: 100;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: auto;
         }
 
-        /* Floating animation */
         .name-overlay {
             animation: float 6s ease-in-out infinite;
+        }
+
+        .balloon-overlay svg {
+            width: 500px;
+            height: auto;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: auto;
+        }
+
+        .balloon-overlay {
+            position: absolute;
+            z-index: 50;
+            pointer-events: none; /* Only the SVG itself will be hoverable */
+            cursor: pointer;
+            transition: none;
+        }
+
+        .balloon-overlay svg:hover {
+            transform: scale(1.05);
         }
 
         @keyframes float {
@@ -58,51 +77,70 @@
             }
         }
 
-        /* Hover effects: small scale */
-        .name-overlay:hover svg {
+        .name-overlay svg:hover {
             transform: scale(1.05);
         }
 
-        /* Add depth to all layers with shadows */
         svg g {
             filter: drop-shadow(0 3px 6px rgba(0,0,0,0.2));
         }
 
-        /* Responsive design */
         @media (max-width: 768px) {
             .name-overlay svg {
                 max-width: 90vw;
                 max-height: 30vh;
             }
+            .balloon-overlay svg {
+                width: 200px;
+            }
         }
 
-        /* Interactive hint */
-        .hover-hint {
-            display: none;
+        .landscape-container svg g[id="_x33_7"],
+        .landscape-container svg g[id="_x33_8"], 
+        .landscape-container svg g[id="_x33_9"] {
+            animation: cloudFloat 20s ease-in-out infinite;
+        }
+
+        .landscape-container svg g[id="_x33_7"] {
+            animation-delay: 0s;
+        }
+
+        .landscape-container svg g[id="_x33_8"] {
+            animation-delay: -7s;
+        }
+
+        .landscape-container svg g[id="_x33_9"] {
+            animation-delay: -14s;
+        }
+
+        @keyframes cloudFloat {
+            0%, 100% {
+                transform: translate(0px, 0px);
+            }
+            25% {
+                transform: translate(8px, -5px);
+            }
+            50% {
+                transform: translate(-5px, 3px);
+            }
+            75% {
+                transform: translate(10px, -7px);
+            }
         }
     </style>
 </head>
 <body>
-    <div class="landscape-container" id="svg-container">
-        <!-- Landscape SVG will be loaded here -->
-    </div>
-    
-    <div class="name-overlay" id="name-container">
-        <!-- Name SVG will be loaded here -->
-    </div>
-
-
+    <div class="landscape-container" id="svg-container"></div>
+    <div class="name-overlay" id="name-container"></div>
+    <div class="balloon-overlay" id="balloon-container"></div>
 
     <script>
-        let mouseX = 0;
-        let mouseY = 0;
-        let svgLayers = [];
+        let balloonElement = null;
+        let balloonTime = 0;
 
-        // Load the landscape SVG
         fetch('scene.svg')
             .then(response => response.text())
             .then(svgText => {
-                console.log('Landscape SVG loaded successfully');
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = svgText;
                 const svgElement = tempDiv.querySelector('svg');
@@ -115,87 +153,81 @@
                     svgElement.setAttribute('preserveAspectRatio', 'xMidYMid slice');
                     
                     document.getElementById('svg-container').appendChild(svgElement);
-                    
-                    // Get cloud layers for mouse interaction
-                    svgLayers = Array.from(svgElement.querySelectorAll('g')).filter(layer => {
-                        const id = layer.id;
-                        return id === '_x33_7' || id === '_x33_8' || id === '_x33_9';
-                    });
-                    console.log(`Found ${svgLayers.length} cloud layers for interaction`);
-                    
-                    setupMouseInteraction();
                 }
             })
             .catch(error => console.error('Error loading landscape SVG:', error));
 
-        // Load the name SVG overlay
         fetch('name.svg')
             .then(response => response.text())
             .then(svgText => {
-                console.log('Name SVG loaded successfully');
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = svgText;
                 const svgElement = tempDiv.querySelector('svg');
                 
                 if (svgElement) {
-                    // Set explicit dimensions based on viewBox
                     const viewBox = svgElement.getAttribute('viewBox');
                     if (viewBox) {
                         const [, , width, height] = viewBox.split(' ').map(Number);
                         svgElement.setAttribute('width', width);
                         svgElement.setAttribute('height', height);
                     }
-                    
                     document.getElementById('name-container').appendChild(svgElement);
-                    console.log('Name SVG added to overlay');
-                    
-
                 }
             })
             .catch(error => console.error('Error loading name SVG:', error));
 
-
-
-        function setupMouseInteraction() {
-            document.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-                updateLayerPositions();
-            });
-        }
-
-        function updateLayerPositions() {
-            svgLayers.forEach((layer) => {
-                const rect = layer.getBoundingClientRect();
-                const layerCenterX = rect.left + rect.width / 2;
-                const layerCenterY = rect.top + rect.height / 2;
+        fetch('balloon.svg')
+            .then(response => response.text())
+            .then(svgText => {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = svgText;
+                const svgElement = tempDiv.querySelector('svg');
                 
-                const deltaX = mouseX - layerCenterX;
-                const deltaY = mouseY - layerCenterY;
-                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-                
-                if (distance < 250) {
-                    const force = Math.pow((250 - distance) / 250, 1.5);
-                    const maxPush = 25;
+                if (svgElement) {
+                    const viewBox = svgElement.getAttribute('viewBox');
+                    if (viewBox) {
+                        const [, , width, height] = viewBox.split(' ').map(Number);
+                        svgElement.setAttribute('width', width);
+                        svgElement.setAttribute('height', height);
+                    }
+                    balloonElement = document.getElementById('balloon-container');
+                    balloonElement.appendChild(svgElement);
                     
-                    const directionX = deltaX / distance;
-                    const directionY = deltaY / distance;
-                    
-                    const pushX = directionX * force * maxPush;
-                    const pushY = directionY * force * maxPush;
-                    
-                    const scale = 1 + force * 0.05;
-                    const rotation = force * 3;
-                    
-                    layer.style.setProperty('transform', `translate(${pushX}px, ${pushY}px) scale(${scale}) rotate(${rotation}deg)`, 'important');
-                    layer.style.setProperty('transition', 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)', 'important');
-                    layer.style.setProperty('animation', 'none', 'important');
-                } else {
-                    layer.style.setProperty('transform', 'translate(0px, 0px) scale(1) rotate(0deg)', 'important');
-                    layer.style.setProperty('transition', 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)', 'important');
+                    startBalloonAnimation();
                 }
-            });
+            })
+            .catch(error => console.error('Error loading balloon SVG:', error));
+
+        function startBalloonAnimation() {
+            function animateBalloon() {
+                if (!balloonElement) return;
+                
+                balloonTime += 0.002; // Much slower speed
+                
+                // Figure-eight pattern using parametric equations
+                // x = sin(t), y = sin(2t) creates a figure-eight
+                const centerX = window.innerWidth / 2;
+                const centerY = window.innerHeight / 2;
+                const scaleX = Math.min(window.innerWidth * 0.3, 300); // Width of figure-eight
+                const scaleY = Math.min(window.innerHeight * 0.2, 150); // Height of figure-eight
+                
+                const balloonX = centerX + Math.sin(balloonTime) * scaleX;
+                const balloonY = centerY + Math.sin(2 * balloonTime) * scaleY;
+                
+                // Update balloon position
+                balloonElement.style.left = balloonX + 'px';
+                balloonElement.style.top = balloonY + 'px';
+                
+                requestAnimationFrame(animateBalloon);
+            }
+            
+            animateBalloon();
         }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            // Figure-eight will automatically adjust to new window size
+        });
     </script>
 </body>
 </html>
