@@ -3,113 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aidan's Portfolio</title>
-    
-    <!-- Link to external CSS files -->
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/responsive.css">
+    <title>Interactive Landscape with Name</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            z-index: 1;
+        }
+
+        .landscape-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .name-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: auto; /* Changed from none to enable hover */
+            z-index: 100;
+            cursor: pointer;
+        }
+
+        .name-overlay svg {
+            width: 600px;
+            height: auto;
+            max-width: 80vw;
+            max-height: 40vh;
+            z-index: 100;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Floating animation */
+        .name-overlay {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(-50%, -50%) translateY(0px);
+            }
+            50% {
+                transform: translate(-50%, -50%) translateY(-10px);
+            }
+        }
+
+        /* Hover effects: small scale */
+        .name-overlay:hover svg {
+            transform: scale(1.05);
+        }
+
+        /* Add depth to all layers with shadows */
+        svg g {
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.2));
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .name-overlay svg {
+                max-width: 90vw;
+                max-height: 30vh;
+            }
+        }
+
+        /* Interactive hint */
+        .hover-hint {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav>
-        <div class="nav-container">
-            <div class="logo">Aidan Donovan</div>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#resume">Resume</a></li>
-            </ul>
-        </div>
-    </nav>
+    <div class="landscape-container" id="svg-container">
+        <!-- Landscape SVG will be loaded here -->
+    </div>
+    
+    <div class="name-overlay" id="name-container">
+        <!-- Name SVG will be loaded here -->
+    </div>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h1>Engineering Portfolio</h1>
-            <a href="#projects" class="cta-button">View My Work</a>
-        </div>
-    </section>
 
-    <!-- About Section -->
-    <section id="about" class="section fade-in">
-        <h2>About Me</h2>
-        <p class="about-text">
-            I am a senior at Boston University studying Mechanical Engineering. 
-        </p>
-    </section>
 
-    <!-- Projects Section -->
-    <section id="projects" class="section fade-in">
-        <h2>Projects</h2>
-        <div class="projects-grid">
-            <a href="chess_bot.html" class="project-card" style="text-decoration: none; color: inherit; display: block;">
-                <h3>Chess Bot</h3>
-                <p>Automated chess system with electromagnet-controlled pieces and custom 3D printed design</p>
-            </a>
-            <div class="project-card">
-                <h3>Project</h3>
-                <p>Text</p>
-            </div>
-            <div class="project-card">
-                <h3>Project</h3>
-                <p>Text</p>
-            </div>
-        </div>
-    </section>
+    <script>
+        let mouseX = 0;
+        let mouseY = 0;
+        let svgLayers = [];
 
-    <!-- Skills Section -->
-    <section id="skills" class="section fade-in">
-        <h2>Technical Skills</h2>
-        <div class="skills-container">
-            <div class="skill-category">
-                <h3>CAD Design</h3>
-                <p>SolidWorks, Inventor, Onshape</p>
-            </div>
-            <div class="skill-category">
-                <h3>Simulation</h3>
-                <p>FEA, CFD, Thermal Desktop</p>
-            </div>
-            <div class="skill-category">
-                <h3>Programming</h3>
-                <p>Python, MATLAB, C</p>
-            </div>
-            <div class="skill-category">
-                <h3>Automation</h3>
-                <p>Arduino, Image Analysis</p>
-            </div>
-        </div>
-    </section>
+        // Load the landscape SVG
+        fetch('scene.svg')
+            .then(response => response.text())
+            .then(svgText => {
+                console.log('Landscape SVG loaded successfully');
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = svgText;
+                const svgElement = tempDiv.querySelector('svg');
+                
+                if (svgElement) {
+                    svgElement.style.width = '100vw';
+                    svgElement.style.height = '100vh';
+                    svgElement.style.display = 'block';
+                    svgElement.style.objectFit = 'cover';
+                    svgElement.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+                    
+                    document.getElementById('svg-container').appendChild(svgElement);
+                    
+                    // Get cloud layers for mouse interaction
+                    svgLayers = Array.from(svgElement.querySelectorAll('g')).filter(layer => {
+                        const id = layer.id;
+                        return id === '_x33_7' || id === '_x33_8' || id === '_x33_9';
+                    });
+                    console.log(`Found ${svgLayers.length} cloud layers for interaction`);
+                    
+                    setupMouseInteraction();
+                }
+            })
+            .catch(error => console.error('Error loading landscape SVG:', error));
 
-    <!-- Resume Section -->
-    <section id="resume" class="section fade-in">
-        <div class="resume-container">
-            <a href="images/AidanDonovanResume.pdf" target="_blank" class="cta-button">
-                Resume
-            </a>
-            <a href="mailto:aidandonovan28@gmail.com" class="cta-button">
-                Email
-            </a>
-            <a href="https://linkedin.com/in/aidandonovan123" target="_blank" class="cta-button">
-                LinkedIn
-            </a>
-            <a href="https://github.com/aidandono" target="_blank" class="cta-button">
-                GitHub
-            </a>
-        </div>
-    </section>
+        // Load the name SVG overlay
+        fetch('name.svg')
+            .then(response => response.text())
+            .then(svgText => {
+                console.log('Name SVG loaded successfully');
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = svgText;
+                const svgElement = tempDiv.querySelector('svg');
+                
+                if (svgElement) {
+                    // Set explicit dimensions based on viewBox
+                    const viewBox = svgElement.getAttribute('viewBox');
+                    if (viewBox) {
+                        const [, , width, height] = viewBox.split(' ').map(Number);
+                        svgElement.setAttribute('width', width);
+                        svgElement.setAttribute('height', height);
+                    }
+                    
+                    document.getElementById('name-container').appendChild(svgElement);
+                    console.log('Name SVG added to overlay');
+                    
 
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2025 Aidan Donovan.</p>
-    </footer>
+                }
+            })
+            .catch(error => console.error('Error loading name SVG:', error));
 
-    <!-- Link to external JavaScript files -->
-    <script src="js/navigation.js"></script>
-    <script src="js/animations.js"></script>
-    <script src="js/forms.js"></script>
+
+
+        function setupMouseInteraction() {
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                updateLayerPositions();
+            });
+        }
+
+        function updateLayerPositions() {
+            svgLayers.forEach((layer) => {
+                const rect = layer.getBoundingClientRect();
+                const layerCenterX = rect.left + rect.width / 2;
+                const layerCenterY = rect.top + rect.height / 2;
+                
+                const deltaX = mouseX - layerCenterX;
+                const deltaY = mouseY - layerCenterY;
+                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                
+                if (distance < 250) {
+                    const force = Math.pow((250 - distance) / 250, 1.5);
+                    const maxPush = 25;
+                    
+                    const directionX = deltaX / distance;
+                    const directionY = deltaY / distance;
+                    
+                    const pushX = directionX * force * maxPush;
+                    const pushY = directionY * force * maxPush;
+                    
+                    const scale = 1 + force * 0.05;
+                    const rotation = force * 3;
+                    
+                    layer.style.setProperty('transform', `translate(${pushX}px, ${pushY}px) scale(${scale}) rotate(${rotation}deg)`, 'important');
+                    layer.style.setProperty('transition', 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)', 'important');
+                    layer.style.setProperty('animation', 'none', 'important');
+                } else {
+                    layer.style.setProperty('transform', 'translate(0px, 0px) scale(1) rotate(0deg)', 'important');
+                    layer.style.setProperty('transition', 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)', 'important');
+                }
+            });
+        }
+    </script>
 </body>
 </html>
