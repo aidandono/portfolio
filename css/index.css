@@ -1,0 +1,145 @@
+body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+    z-index: 1;
+}
+
+.landscape-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.name-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none; 
+    z-index: 100;
+    cursor: pointer;
+}
+
+.name-overlay svg {
+    width: 600px;
+    height: auto;
+    max-width: 80vw;
+    max-height: 40vh;
+    z-index: 100;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: auto;
+}
+
+.name-overlay {
+    animation: float 6s ease-in-out infinite;
+}
+
+.balloon-overlay svg {
+    width: 500px;
+    height: auto;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: auto;
+}
+
+.balloon-overlay {
+    position: absolute;
+    z-index: 50;
+    pointer-events: none; 
+    cursor: pointer;
+    transition: none;
+}
+
+.balloon-overlay svg:hover {
+    transform: scale(1.05);
+}
+
+.cloud-overlay {
+    position: absolute;
+    z-index: 30;
+    pointer-events: none;
+    cursor: pointer;
+    transition: none;
+}
+
+.cloud-overlay svg {
+    width: 20rem;
+    height: auto;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: auto;
+}
+
+.cloud-overlay svg:hover {
+    transform: scale(1.1);
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translate(-50%, -50%) translateY(0px);
+    }
+    50% {
+        transform: translate(-50%, -50%) translateY(-10px);
+    }
+}
+
+.name-overlay svg:hover {
+    transform: scale(1.05);
+}
+
+svg g {
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.2));
+}
+
+@media (max-width: 768px) {
+    .name-overlay svg {
+        max-width: 90vw;
+        max-height: 30vh;
+    }
+    .balloon-overlay svg {
+        width: 200px;
+    }
+    .cloud-overlay svg {
+        width: 20rem;
+        height: auto;
+    }
+}
+
+.landscape-container svg g[id="_x33_7"],
+.landscape-container svg g[id="_x33_8"], 
+.landscape-container svg g[id="_x33_9"] {
+    animation: cloudFloat 20s ease-in-out infinite;
+}
+
+.landscape-container svg g[id="_x33_7"] {
+    animation-delay: 0s;
+}
+
+.landscape-container svg g[id="_x33_8"] {
+    animation-delay: -7s;
+}
+
+.landscape-container svg g[id="_x33_9"] {
+    animation-delay: -14s;
+}
+
+@keyframes cloudFloat {
+    0%, 100% {
+        transform: translate(0px, 0px);
+    }
+    25% {
+        transform: translate(8px, -5px);
+    }
+    50% {
+        transform: translate(-5px, 3px);
+    }
+    75% {
+        transform: translate(10px, -7px);
+    }
+}
