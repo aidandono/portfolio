@@ -1,7 +1,7 @@
 let balloonElement = null;
 let balloonTime = 0;
 
-fetch('scene.svg')
+fetch('svgs/scene.svg')
     .then(response => response.text())
     .then(svgText => {
         const tempDiv = document.createElement('div');
@@ -20,7 +20,7 @@ fetch('scene.svg')
     })
     .catch(error => console.error('Error loading landscape SVG:', error));
 
-fetch('name.svg')
+fetch('svgs/name.svg')
     .then(response => response.text())
     .then(svgText => {
         const tempDiv = document.createElement('div');
@@ -39,7 +39,7 @@ fetch('name.svg')
     })
     .catch(error => console.error('Error loading name SVG:', error));
 
-fetch('balloon.svg')
+fetch('svgs/balloon.svg')
     .then(response => response.text())
     .then(svgText => {
         const tempDiv = document.createElement('div');
@@ -61,7 +61,7 @@ fetch('balloon.svg')
     })
     .catch(error => console.error('Error loading balloon SVG:', error));
 
-fetch('cloud1.svg')
+fetch('svgs/cloud1.svg')
     .then(response => response.text())
     .then(svgText => {
         const tempDiv = document.createElement('div');
@@ -81,7 +81,7 @@ fetch('cloud1.svg')
     })
     .catch(error => console.error('Error loading cloud1 SVG:', error));
 
-fetch('cloud2.svg')
+fetch('svgs/cloud2.svg')
     .then(response => response.text())
     .then(svgText => {
         const tempDiv = document.createElement('div');
@@ -102,7 +102,7 @@ fetch('cloud2.svg')
     .catch(error => console.error('Error loading cloud2 SVG:', error));
 
 
-fetch('cloud3.svg')
+fetch('svgs/cloud3.svg')
     .then(response => response.text())
     .then(svgText => {
         const tempDiv = document.createElement('div');
