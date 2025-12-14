@@ -3,17 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aidan's Portfolio</title>
-    <link rel="stylesheet" href="css/index.css">
+    <title>Aidan Donovan - Portfolio</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="landscape-container" id="svg-container"></div>
-    <div class="name-overlay" id="name-container"></div>
-    <div class="balloon-overlay" id="balloon-container"></div>
-    <div class="cloud-overlay" id="cloud1-container" style="top: 8%; left: 15%;"></div>
-    <div class="cloud-overlay" id="cloud2-container" style="top: 12%; left: 65%;"></div>
-    <div class="cloud-overlay" id="cloud3-container" style="top: 5%; left: 40%;"></div>
+    <header class="header">
+        <nav class="nav">
+            <a href="https://linkedin.com/in/aidandonovan123" target="_blank" rel="noopener noreferrer" class="nav-link">LinkedIn</a>
+            <a href="#projects" class="nav-link">Projects</a>
+            <a href="#contact" class="nav-link">Contact</a>
+        </nav>
+    </header>
 
-    <script src="js/svg_loading.js"></script>
+    <section class="hero">
+        <h1 class="hero-name">Aidan Donovan.</h1>
+        <p class="hero-subtitle">Mechanical Engineer</p>
+    </section>
+
+    <section id="projects" class="projects">
+        <div class="projects-grid">
+            <a href="project-detail.html" class="project-tile">
+                <div class="project-image">
+                    <img src="images/chess.jpeg">
+                </div>
+                <h3 class="project-title">Chess-Bot</h3>
+                <p class="project-description">2.5 axis electromagnetic chess robot</p>
+            </a>
+
+            <a href="car.html" class="project-tile">
+                <div class="project-image">
+                    <img src="images/car.jpeg">
+                </div>
+                <h3 class="project-title">Closed Loop Car</h3>
+                <p class="project-description">PID Car meant to carry a beam without tipping</p>
+            </a>
+
+            <div class="project-tile">
+                <div class="project-image">
+                    <img src="images/point2point.png">
+                </div>
+                <h3 class="project-title">Point 2 Point Light Communicator</h3>
+                <p class="project-description">Uses light to send and receive signals</p>
+            </div>
+
+            <div class="project-tile">
+                <div class="project-image">
+                    <img src="images/fiber.png">
+                </div>
+                <h3 class="project-title">Digital Image Correlation Research</h3>
+                <p class="project-description">A brief description of this project and its key features.</p>
+            </div>
+
+            <div class="project-tile">
+                <div class="project-image">
+                    <img src="images/spoiler.png">
+                </div>
+                <h3 class="project-title">Car Spoiler Simulation</h3>
+                <p class="project-description">COMSOL simulation of how spoilers affect car lift and drag</p>
+            </div>
+
+            <div class="project-tile">
+                <div class="project-image">
+                    <img src="images/crack.png" >
+                </div>
+                <h3 class="project-title">Thermal Fracture of Glass</h3>
+                <p class="project-description">COMSOL simulations showing how glass reacts to thermal stress.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <h2>Get in Touch</h2>
+        <p>contact@aidandonovan.org</p>
+    </section>
+
+    <script src="script.js"></script>
 </body>
 </html>
